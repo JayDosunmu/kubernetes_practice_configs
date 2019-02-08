@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: model
+spec:
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: model
+    spec:
+      containers:
+        - image: theblasiantj/model:0.6.2
+          name: model
+          ports:
+            - containerPort: 9001
+          env:
+            - name: FEATURE_PIPELINE_URL
+              value: "http://feature-pipeline-loadbalancer"
+            - name: FEATURE_PIPELINE_PORT
+              value: "11594"
